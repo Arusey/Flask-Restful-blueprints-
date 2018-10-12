@@ -2,7 +2,7 @@ from flask import jsonify, make_response, request
 from flask_restful import Resource
 
 cart = []
-
+users = []
 class Cart(Resource):
 	def post(self):
 		id = len(cart) + 1
@@ -32,6 +32,53 @@ class Cart(Resource):
 
 	def get(self):
 		return cart
+
+class SignUp(Resource):
+	"""docstring for SignUp"""
+	def post(self):
+		data = request.get_json()
+		id = len(users) + 1
+		self.name = data['name'] 
+		self.email = data['email']
+		self.password = data['password']
+
+		
+		
+		
+
+		user = {
+			"name" : self.name,
+			"email" : self.email,
+			"password" : self.password
+		}
+
+		users.append(user)
+		return make_response(jsonify(
+				{
+				"Status": "ok",
+				"Message" : "Account created Successfully",
+				"user" : users
+				} , 201
+			))
+
+class Login(Resource):
+	def post(self):
+		data = request.get_json()
+
+		self.email = data["email"]
+		self.password = data["password"]
+
+		for user in users:
+			if user["email"] == data["email"] and user["password"] == data["password"]:
+				return make_response(jsonify(
+						{
+						'Status': "ok",
+						"Message" : "Login Successful",
+						"return" : user
+						}, 200
+					))
+
+
 
 class Orders(Resource):
 	def get(self, id):
